@@ -4,7 +4,7 @@ import { AngularLoginBrokerLibraryService } from './angular-login-broker-library
 @Component({
   selector: 'app-login-broker-button',
   template: `
-    <button class="login-broker-button login-broker-{{ platform }}-button" (click)="startLoginProcess(tenantName, platform)">
+    <button class="login-broker-button login-broker-{{ platform }}-button" (click)="startLoginProcess()">
       <i class="fab fa-{{ platform }}"></i>
       Login with {{ platform }}
     </button>

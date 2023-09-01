@@ -9,6 +9,8 @@ import { catchError, switchMap, take, tap } from 'rxjs/operators';
 export class AngularLoginBrokerLibraryService {
   private MAX_RETRY_COUNT = 60;
   private sessionId: string = '';
+  private platform: string = '';
+  private tenantName: string = '';
   private retryCount = 0;
   private hasBeenPending = false;
 
@@ -31,7 +33,7 @@ export class AngularLoginBrokerLibraryService {
     console.log('fetchStatus starting');
     console.log('currentSessionId:', currentSessionId);
     if (currentSessionId) {
-      return this.http.get<string>(`https://api.login.broker/${tenantName}/auth/status/${currentSessionId}`).pipe(
+      return this.http.get<string>(`https://api.login.broker/${this.tenantName}/auth/status/${currentSessionId}`).pipe(
         catchError(error => {
           onErrorReceived(error); // Call the error callback
           return throwError(error);
@@ -83,12 +85,14 @@ export class AngularLoginBrokerLibraryService {
     onErrorReceived: (error: string) => void,
     onSessionReceived: (sessionId: string) => void
   ): void {
-    const newSessionId = this.generateRandomString(15);
-    window.open(`https://${platform}.login.broker/${tenantName}/auth/${platform}/session/${newSessionId}`);
+    this.tenantName = tenantName;
+    this.platform = platform;
+    this.sessionId = this.generateRandomString(15);
+
+    window.open(`https://${this.platform}.login.broker/${this.tenantName}/auth/${this.platform}/session/${this.sessionId}`);
 
     // Wait for the window to open and to save the new session in the API
     setTimeout(() => {
-      this.sessionId = newSessionId;
       this.confirmLogin(onErrorReceived, onSessionReceived);
     }, 2000); // Adjust the delay time as needed
   }
