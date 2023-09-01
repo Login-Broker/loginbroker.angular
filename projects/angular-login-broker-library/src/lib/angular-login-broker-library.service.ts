@@ -35,7 +35,7 @@ export class AngularLoginBrokerLibraryService {
     if (currentSessionId) {
       return this.http.get<string>(`https://api.login.broker/${this.tenantName}/auth/status/${currentSessionId}`).pipe(
         catchError(error => {
-          onErrorReceived(error); // Call the error callback
+          this.handleError(error, onErrorReceived);
           return throwError(error);
         })
       );
@@ -43,8 +43,14 @@ export class AngularLoginBrokerLibraryService {
     return throwError('Invalid Session ID');
   }
 
+  private handleError(error: any, onErrorReceived: (error: string) => void): void {
+    console.error(error);
+    onErrorReceived(error); // Call the error callback
+  }
+
   private handleStatusResponse(data: string, onErrorReceived: (error: string) => void, onSessionReceived: (sessionId: string) => void): void {
     if (data === 'completed') {
+      debugger
       onSessionReceived(this.sessionId); // Call the session callback
     } else if (data === 'failed') {
       console.log('Login failed. Try again');
@@ -72,11 +78,6 @@ export class AngularLoginBrokerLibraryService {
       console.log('Max retries reached while pending. Giving up.');
       onErrorReceived('Max retries reached while pending. Giving up.'); // Call the error callback
     }
-  }
-
-  private handleError(error: any, onErrorReceived: (error: string) => void): void {
-    console.error(error);
-    onErrorReceived(error); // Call the error callback
   }
 
   public startLoginProcess(
