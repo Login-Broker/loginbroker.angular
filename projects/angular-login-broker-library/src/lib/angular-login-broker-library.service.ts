@@ -87,8 +87,8 @@ export class AngularLoginBrokerLibraryService {
   public startLoginProcess(
     tenantName: string,
     platform: string,
-    onErrorReceived: (error: string) => void,
-    onSessionReceived: (sessionId: string) => void
+    onSessionReceived: (sessionId: string) => void,
+    onErrorReceived: (error: string) => void
   ): void {
     this.tenantName = tenantName;
     this.platform = platform;
