@@ -4,8 +4,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { AngularLoginBrokerLibraryComponent } from './angular-login-broker-library.component';
 import { AngularLoginBrokerLibraryService } from './angular-login-broker-library.service';
 
-
-
 @NgModule({
   declarations: [
     AngularLoginBrokerLibraryComponent

@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { AngularLoginBrokerLibraryService } from './angular-login-broker-library.service';
 
 @Component({
-  selector: 'app-login-broker-button',
+  selector: 'LoginBrokerButton',
   template: `
     <button class="login-broker-button login-broker-{{ platform }}-button" (click)="startLoginProcess()">
       <i class="fab fa-{{ platform }}"></i>
