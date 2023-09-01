@@ -71,25 +71,6 @@ export class AngularLoginBrokerLibraryService {
     onErrorReceived(error); // Call the error callback
   }
 
-  private handleStatusResponse(data: string, onErrorReceived: (error: string) => void, onSessionReceived: (sessionId: string) => void): void {
-    if (data === 'completed') {
-      debugger
-      onSessionReceived(this.sessionId); // Call the session callback
-    } else if (data === 'failed') {
-      console.log('Login failed. Try again');
-      onErrorReceived(data); // Call the error callback
-    } else if (data === 'pending') {
-      this.hasBeenPending = true;
-      this.retryLoginOrGiveUp(onErrorReceived, onSessionReceived);
-    } else if (this.hasBeenPending) {
-      console.log('Session expired');
-      onErrorReceived(data); // Call the error callback
-    } else {
-      console.log('Session not yet available');
-      this.retryLoginOrGiveUp(onErrorReceived, onSessionReceived);
-    }
-  }
-
   private retryLoginOrGiveUp(onErrorReceived: (error: string) => void, onSessionReceived: (sessionId: string) => void): void {
     if (this.retryCount < this.MAX_RETRY_COUNT) {
       this.retryCount++;
