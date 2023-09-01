@@ -37,7 +37,7 @@ export class AngularLoginBrokerLibraryService {
     console.log('fetchStatus starting');
     console.log('currentSessionId:', currentSessionId);
     if (currentSessionId) {
-      this.http.get<string>(`https://api.login.broker/${this.tenantName}/auth/status/${currentSessionId}`)
+      this.http.get(`https://api.login.broker/${this.tenantName}/auth/status/${currentSessionId}`, {responseType: 'text'})
         .subscribe(
           (data: string) => {
             // Handle the data inside the subscribe callback
