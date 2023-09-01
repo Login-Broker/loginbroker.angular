@@ -1,27 +1,69 @@
-# MyWorkspace
+# angular-login-broker-library
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.1.
+Use Login Broker (https://login.broker) to login to your app or website with facebook, google, linkedin, microsoft, apple or github. Sign up for free and get 100,000 monthly active users. No credit card required.
 
-## Development server
+Please note that after the user logs in, this will produce a 'sessionId'. This must be verified on your server-side to complete the authentication.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Get a free API key here and also see the details about how to call the api to verify:
+https://login.broker/account/
 
-## Code scaffolding
+## Installation
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```
+npm install angular-login-broker-library
+```
 
-## Build
+## Usage with LoginBrokerButton
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+This is the quickest way to make it work. It will show a button to login and includes an icon if you have Font Awesome Free version 5 available.
 
-## Running unit tests
+First, you need to include AngularLoginBrokerLibraryModule into your project's module like this.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AngularLoginBrokerLibraryModule } from 'angular-login-broker-library';
+import { AppComponent } from './app.component';
 
-## Running end-to-end tests
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    AngularLoginBrokerLibraryModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+Next, include app-login-broker-button into component html as this.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```
+<app-login-broker-button
+    [tenantName]="'loginbroker'"
+    [platform]="'google'"
+    [onSessionReceived]="handleSessionReceived.bind(this)"
+    [onErrorReceived]="handleErrorReceived.bind(this)">
+  </app-login-broker-button>
+  <app-login-broker-button
+    [tenantName]="'loginbroker'"
+    [platform]="'github'"
+    [onSessionReceived]="handleSessionReceived.bind(this)"
+    [onErrorReceived]="handleErrorReceived.bind(this)">
+  </app-login-broker-button>
+```
 
-## Further help
+In component itself, you can put handlers.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```
+  const handleSessionReceived = (sessionId) => {
+    console.log('Received sessionId', sessionId);
+    // Verify the sessionId on your server-side or API and get the logged in user email
+  }
+
+  const handleErrorReceived = (error) => {
+    console.log('Error happened', error);
+  }
+```
