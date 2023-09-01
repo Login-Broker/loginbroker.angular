@@ -29,18 +29,41 @@ export class AngularLoginBrokerLibraryService {
     return randomString;
   }
 
-  private fetchStatus(currentSessionId: string, onErrorReceived: (error: string) => void, onSessionReceived: (sessionId: string) => void): Observable<string> {
+  private fetchStatus(
+    currentSessionId: string,
+    onErrorReceived: (error: string) => void,
+    onSessionReceived: (sessionId: string) => void
+  ) {
     console.log('fetchStatus starting');
     console.log('currentSessionId:', currentSessionId);
     if (currentSessionId) {
-      return this.http.get<string>(`https://api.login.broker/${this.tenantName}/auth/status/${currentSessionId}`).pipe(
-        catchError(error => {
-          this.handleError(error, onErrorReceived);
-          return throwError(error);
-        })
-      );
+      this.http.get<string>(`https://api.login.broker/${this.tenantName}/auth/status/${currentSessionId}`)
+        .subscribe(
+          (data: string) => {
+            // Handle the data inside the subscribe callback
+            if (data === 'completed') {
+              debugger;
+              onSessionReceived(this.sessionId);
+            } else if (data === 'failed') {
+              console.log('Login failed. Try again');
+              onErrorReceived(data);
+            } else if (data === 'pending') {
+              this.hasBeenPending = true;
+              this.retryLoginOrGiveUp(onErrorReceived, onSessionReceived);
+            } else if (this.hasBeenPending) {
+              console.log('Session expired');
+              onErrorReceived(data);
+            } else {
+              console.log('Session not yet available');
+              this.retryLoginOrGiveUp(onErrorReceived, onSessionReceived);
+            }
+          },
+          (error) => {
+            debugger
+            this.handleError(error, onErrorReceived);
+          }
+        );
     }
-    return throwError('Invalid Session ID');
   }
 
   private handleError(error: any, onErrorReceived: (error: string) => void): void {
@@ -99,10 +122,6 @@ export class AngularLoginBrokerLibraryService {
   }
 
   public confirmLogin(onErrorReceived: (error: string) => void, onSessionReceived: (sessionId: string) => void): void {
-    if (this.sessionId) {
-      this.fetchStatus(this.sessionId, onErrorReceived, onSessionReceived).subscribe(data =>
-        this.handleStatusResponse(data, onErrorReceived, onSessionReceived)
-      );
-    }
+    this.fetchStatus(this.sessionId, onErrorReceived, onSessionReceived);
   }
 }
