@@ -54,7 +54,9 @@ Next, include app-login-broker-button into component html as this.
     [onErrorReceived]="handleErrorReceived.bind(this)">
   </app-login-broker-button>
 
-  <button (click)="startLoginProcess('loginbroker', 'google')">Start Login with Google</button>
+  <!-- Example using the Angular service directly -->
+  <button (click)="startLoginProcess('loginbroker', 'google')">Start Login Process (Google)</button>
+  <button (click)="startLoginProcess('loginbroker', 'github')">Start Login Process (GitHub)</button>
 ```
 
 In component itself, you can put handlers.
