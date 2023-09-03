@@ -53,17 +53,30 @@ Next, include app-login-broker-button into component html as this.
     [onSessionReceived]="handleSessionReceived.bind(this)"
     [onErrorReceived]="handleErrorReceived.bind(this)">
   </app-login-broker-button>
+
+  <button (click)="startLoginProcess('loginbroker', 'google')">Start Login with Google</button>
 ```
 
 In component itself, you can put handlers.
 
 ```
-  const handleSessionReceived = (sessionId) => {
+  constructor(private loginBrokerService: AngularLoginBrokerLibraryService) {}
+
+  handleSessionReceived(sessionId: string): void {
     console.log('Received sessionId', sessionId);
-    // Verify the sessionId on your server-side or API and get the logged in user email
+    // Verify the sessionId on your server-side or API and get the logged-in user email
   }
 
-  const handleErrorReceived = (error) => {
+  handleErrorReceived(error: string): void {
     console.log('Error happened', error);
+  }
+
+  startLoginProcess(tenantName: string, platform: string): void {
+    this.loginBrokerService.startLoginProcess(
+      tenantName,
+      platform,
+      this.handleSessionReceived.bind(this),
+      this.handleErrorReceived.bind(this)
+    );
   }
 ```
